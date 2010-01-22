@@ -1,0 +1,1 @@
+from shopipy.shopify import Shopify
