@@ -2,23 +2,22 @@ import urllib
 import urllib2
 import urlparse
 
-try:
-  from lxml import etree
-except ImportError:
-  try:
-    # Python 2.5
-    import xml.etree.cElementTree as etree
-  except ImportError:
-    try:
-      # Python 2.5
-      import xml.etree.ElementTree as etree
-    except ImportError:
-      try:
-        # normal cElementTree install
-        import cElementTree as etree
-      except ImportError:
-          # normal ElementTree install
-          import elementtree.ElementTree as etree
+__all__ = ['generate_url', 'generate_request', 'parse_xml', 'serialize_xml']
+
+def _import_etree(packages=('lxml.etree', 'xml.etree.cElementTree',
+                            'cElementTree', 'elementtree.ElementTree')):
+    for pkg_name in packages:
+        try:
+            pkg = __import__(pkg_name)
+        except ImportError:
+            continue
+        else:
+            for subpkg_name in pkg_name.split('.')[1:]:  # skip the base package
+                assert hasattr(pkg, subpkg_name)
+                pkg = getattr(pkg, subpkg_name)
+            return pkg
+
+etree = _import_etree()
 
 def generate_url(protocol, domain, path, param_dict):
     url = "%s://%s%s" % (protocol, domain, path)
