@@ -14,17 +14,22 @@ class Shopify(object):
                                   passwd=password)
         self.urlopener = urllib2.build_opener(auth_handler)
     
+    def _request(self, method, path, get_params, body=None, headers={}):
+        url = generate_url(self.protocol, self.domain, path, get_params)
+        request = generate_request(method, url, body)
+        for name, value in headers.items():
+            request.add_header(name, value)
+        conn = self.urlopener.open(request)
+        root = parse_xml(conn)
+        return root
+    
     def GET(self, path, **kwargs):
         """
         Issues an authenticated GET request to the given path
         If present, any keyword arguments are converted to GET parameters
         @return root - ElementTree root
         """
-        url = generate_url(self.protocol, self.domain, path, kwargs)
-        request = generate_request('GET', url)
-        conn = self.urlopener.open(request)
-        root = parse_xml(conn)
-        return root
+        return self._request('GET', path, kwargs)
     
     def POST(self, path, body, **kwargs):
         """
@@ -32,12 +37,9 @@ class Shopify(object):
         If present, any keyword arguments are converted to GET parameters
         @return root - ElementTree root
         """
-        url = generate_url(self.protocol, self.domain, path, kwargs)
-        request = generate_request('POST', url, serialize_xml(body))
-        request.add_header('Content-Type', 'text/xml')
-        conn = self.urlopener.open(request)
-        root = parse_xml(conn)
-        return root
+        return self._request('POST', path, kwargs, body, headers = {
+            'Content-Type': 'text/xml',
+        })
     
     def PUT(self, path, body, **kwargs):
         """
@@ -45,12 +47,9 @@ class Shopify(object):
         If present, any keyword arguments are converted to GET parameters
         @return root - ElementTree root
         """
-        url = generate_url(self.protocol, self.domain, path, kwargs)
-        request = generate_request('PUT', url, serialize_xml(body))
-        request.add_header('Content-Type', 'text/xml')
-        conn = self.urlopener.open(request)
-        root = parse_xml(conn)
-        return root
+        return self._request('PUT', path, kwargs, body, headers = {
+            'Content-Type': 'text/xml',
+        })
     
     def DELETE(self, path, **kwargs):
         """
@@ -58,9 +57,5 @@ class Shopify(object):
         If present, any keyword arguments are converted to GET parameters
         @return root - ElementTree root
         """
-        url = generate_url(self.protocol, self.domain, path, kwargs)
-        request = generate_request('DELETE', url)
-        conn = self.urlopener.open(request)
-        root = parse_xml(conn)
-        return root
+        return self._request('DELETE', path, kwargs)
 
