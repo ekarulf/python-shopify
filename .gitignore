@@ -3,3 +3,4 @@ bin/
 develop-eggs/
 eggs/
 src/shopipy.egg-info/
+*.pyc
