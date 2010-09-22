@@ -16,6 +16,7 @@ def _import_etree(packages=('lxml.etree', 'xml.etree.cElementTree',
                 assert hasattr(pkg, subpkg_name)
                 pkg = getattr(pkg, subpkg_name)
             return pkg
+    raise ImportError("ElementTree library could not be found")
 
 etree = _import_etree()
 
