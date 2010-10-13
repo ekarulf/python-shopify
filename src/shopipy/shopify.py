@@ -4,7 +4,7 @@ import urllib2
 from shopipy.util import generate_url, generate_request, parse_xml, serialize_xml
 
 class Shopify(object):
-    def __init__(self, domain, api_key, password, secure=False):
+    def __init__(self, domain, api_key, password, secure=True):
         self.protocol = "https" if secure else "http"
         self.domain = domain
         auth_handler = urllib2.HTTPBasicAuthHandler()
