@@ -1,9 +1,15 @@
 import urllib
 import urllib2
+import platform
+import shopipy
 
 from shopipy.util import generate_url, generate_request, parse_xml, serialize_xml
 
 class Shopify(object):
+    DEFAULT_HEADERS = {
+        'User-Agent':   'Shopipy/%s Python/%s %s/%s' % (shopipy.__version__, platform.python_version(), platform.system(), platform.release()),
+    }
+    
     def __init__(self, domain, api_key, password, secure=True):
         self.protocol = "https" if secure else "http"
         self.domain = domain
@@ -15,6 +21,8 @@ class Shopify(object):
         self.urlopener = urllib2.build_opener(auth_handler)
     
     def _request(self, method, path, get_params, body=None, headers={}):
+        req_headers = dict(self.DEFAULT_HEADERS)
+        req_headers.update(headers)
         url = generate_url(self.protocol, self.domain, path, get_params)
         request = generate_request(method, url, body)
         for name, value in headers.items():
