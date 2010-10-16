@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
-import shopipy
 
 setup(
     name = "shopipy",
-    version = shopipy.__version__,
+    version = "0.2.0",
     url = 'http://www.github.com/penny-arcade/shopipy/',
     license = 'MIT',
     description = "A simple Shopify API wrapper",
