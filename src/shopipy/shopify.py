@@ -1,3 +1,4 @@
+import base64
 import urllib
 import urllib2
 import platform
@@ -13,21 +14,19 @@ class Shopify(object):
     def __init__(self, domain, api_key, password, secure=True):
         self.protocol = "https" if secure else "http"
         self.domain = domain
-        auth_handler = urllib2.HTTPBasicAuthHandler()
-        auth_handler.add_password(realm="Shopify API Authentication",
-                                  uri=generate_url(self.protocol, self.domain, '/admin/', {}),
-                                  user=api_key,
-                                  passwd=password)
-        self.urlopener = urllib2.build_opener(auth_handler)
+        # HTTPBasicAuthHandler does not reliably set this header in Python 2.7
+        # Originally, this code used a urllib2 urlopener.
+        self.headers = dict(self.DEFAULT_HEADERS, **{
+            "Authorization": "Basic %s" % base64.b64encode(":".join((api_key, password))),
+        })
     
     def _request(self, method, path, get_params, body=None, headers={}):
-        req_headers = dict(self.DEFAULT_HEADERS)
-        req_headers.update(headers)
         url = generate_url(self.protocol, self.domain, path, get_params)
+        req_headers = dict(self.headers, **headers)
         request = generate_request(method, url, body)
-        for name, value in headers.items():
+        for name, value in req_headers.items():
             request.add_header(name, value)
-        conn = self.urlopener.open(request)
+        conn = urllib2.urlopen(request)
         root = parse_xml(conn)
         return root
     
