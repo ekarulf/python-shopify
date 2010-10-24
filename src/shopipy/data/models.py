@@ -67,9 +67,10 @@ class BaseShopifyElement(object):
                 setattr(self, key, value)
     
     def __setattr__(self, name, value):
-        field = self._fields[name]
-        value = field.to_python(value)
-        field.validate(value)
+        if name in self._fields:
+            field = self._fields[name]
+            value = field.to_python(value)
+            field.validate(value)
         object.__setattr__(self, name, value)
     
     @classmethod
