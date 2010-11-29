@@ -6,7 +6,7 @@ import re
 import dateutil.parser
 from decimal import Decimal, DecimalException
 from datetime import datetime, time, date
-from shopipy.util import etree, parse_xml
+from shopipy.util import etree, etree_element, parse_xml
 from shopipy.exceptions import ValidationError
 
 EMPTY_VALUES = (None, '', [], (), {})
@@ -76,7 +76,7 @@ class Field(object):
                     raise ValidationError("ValidationError: Failed %s check" % validator.__name__)
     
     def to_python(self, value):
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             if 'nil' in value.attrib:
                 return None
             return value.text
@@ -97,7 +97,7 @@ class StringField(Field):
     
     def to_python(self, value):
         "Returns a Unicode object."
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         return value
     
@@ -122,7 +122,7 @@ class BooleanField(Field):
         # will submit for False. Also check for '0'.
         # Because bool("True") == bool('1') == True, we don't need to handle
         # that explicitly.
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         if value in ('False', '0', 'false'):
             value = False
@@ -145,7 +145,7 @@ class IntegerField(Field):
     }
     
     def to_python(self, value):
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         try:
             value = int(str(value))
@@ -173,7 +173,7 @@ class DecimalField(Field):
         Validates that the input is a decimal number. Returns a Decimal
         instance. Returns None for empty values.
         """
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         if value in EMPTY_VALUES:
             return None
@@ -204,7 +204,7 @@ class FloatField(Field):
         Validates that the input is a decimal number. Returns a Decimal
         instance. Returns None for empty values.
         """
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         if value in EMPTY_VALUES:
             return None
@@ -232,7 +232,7 @@ class DateTimeField(Field):
     }
     
     def to_python(self, value):
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             value = value.text
         try:
             if value is None:
@@ -267,7 +267,7 @@ class ElementField(Field):
         
         # Get XML element
         node = None
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             node = value
         elif isinstance(value, type(str)):
             node = etree.parse(value)
@@ -291,7 +291,7 @@ class ArrayField(Field):
     def to_python(self, value):
         # Get XML element
         node = None
-        if isinstance(value, etree._Element):
+        if isinstance(value, etree_element):
             node = value
         elif isinstance(value, str):
             node = etree.parse(value)

@@ -19,6 +19,7 @@ def _import_etree(packages=('lxml.etree', 'xml.etree.cElementTree',
     raise ImportError("ElementTree library could not be found")
 
 etree = _import_etree()
+etree_element = type(etree.Element('example'))  # etree.Element is a factory
 
 # Copied from the Django Project
 class SortedDict(dict):
