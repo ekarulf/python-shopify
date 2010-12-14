@@ -75,7 +75,7 @@ class BaseShopifyElement(object):
     
     @classmethod
     def parse_xml(cls, node):
-        if isinstance(node, str):
+        if isinstance(node, (str, unicode)):
             node = etree.parse(StringIO(node)).getroot()
         
         element = cls()

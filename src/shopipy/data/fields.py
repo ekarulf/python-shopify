@@ -269,7 +269,7 @@ class ElementField(Field):
         node = None
         if isinstance(value, etree_element):
             node = value
-        elif isinstance(value, type(str)):
+        elif isinstance(value, (str, unicode)):
             node = etree.parse(value)
         else:
             raise ValueError("Could not parse XML from value: %s" % repr(value))
@@ -293,7 +293,7 @@ class ArrayField(Field):
         node = None
         if isinstance(value, etree_element):
             node = value
-        elif isinstance(value, str):
+        elif isinstance(value, (str, unicode)):
             node = etree.parse(value)
         elif isinstance(value, (tuple, list)):
             return value
