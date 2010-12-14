@@ -11,9 +11,11 @@ class Shopify(object):
         'User-Agent':   'Shopipy/%s Python/%s %s/%s' % (shopipy.__version__, platform.python_version(), platform.system(), platform.release()),
     }
     
-    def __init__(self, domain, api_key, password, secure=True):
+    def __init__(self, domain, api_key, password, secure=True, api_throttle=None):
         self.protocol = "https" if secure else "http"
         self.domain = domain
+        self.api_key = api_key
+        self.api_throttle = api_throttle
         # HTTPBasicAuthHandler does not reliably set this header in Python 2.7
         # Originally, this code used a urllib2 urlopener.
         self.headers = dict(self.DEFAULT_HEADERS, **{
@@ -21,12 +23,19 @@ class Shopify(object):
         })
     
     def _request(self, method, path, get_params, body=None, headers={}):
+        # Allow API throttling via various mechanisms
+        if callable(self.api_throttle):
+            self.api_throttle(self)
+        
+        # Create and send HTTP Request
         url = generate_url(self.protocol, self.domain, path, get_params)
         req_headers = dict(self.headers, **headers)
         request = generate_request(method, url, body)
         for name, value in req_headers.items():
             request.add_header(name, value)
         conn = urllib2.urlopen(request)
+        
+        # Parse HTTP Response (expecting a well-formed XML document)
         root = parse_xml(conn)
         return root
     
