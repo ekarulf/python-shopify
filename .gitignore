@@ -3,5 +3,7 @@ bin/
 develop-eggs/
 eggs/
 parts/
+dist/
 shopipy.egg-info/
 *.pyc
+MANIFEST
