@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2011 Penny Arcade, Inc. All Rights Reserved.
+# Copyright 2011 Erik Karulf. All Rights Reserved.
 
 "Helper utilities for ShopifyAPI"
 
