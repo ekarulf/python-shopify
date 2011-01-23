@@ -11,7 +11,7 @@ setup(name='shopify',
       packages=['shopify'],
       package_dir={'shopify':'src'},
       license='MIT License',
-      requires=['pyactiveresource>1.0.0']
+      requires=['pyactiveresource(>=1.0.0)'],
       platforms=['any'],
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: Developers', 
