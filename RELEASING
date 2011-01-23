@@ -1,0 +1,16 @@
+Releasing Shopify Python API (copied from Ruby API)
+
+1. Check the Semantic Versioning page for info on how to version the new release: http://semver.org
+2. Update the version of ShopifyAPI in setup.py
+3. Add a CHANGELOG entry for the new release with the date
+4. Commit the changes with a commit message like "Packaging for release X.Y.Z"
+5. Tag the release with the version (Leave REV blank for HEAD or provide a SHA)
+  $ git tag vX.Y.Z REV
+6. Push out the changes
+  $ git push
+7. Push out the tags
+  $ git push --tags
+8. Build source distribution
+  $ python setup.py sdist
+9. Publish to PyPi (sign with GPG)
+  $ python setup.py upload --sign

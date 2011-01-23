@@ -1,14 +1,25 @@
-from setuptools import setup, find_packages
+from distutils.core import setup
 
-setup(
-    name = "shopipy",
-    version = "0.2.0",
-    url = 'http://www.github.com/penny-arcade/shopipy/',
-    license = 'MIT',
-    description = "A simple Shopify API wrapper",
-    author = 'Erik Karulf <erik@karulf.com>',
-    # Below this line is tasty Kool-Aide provided by the Cargo Cult
-    packages = find_packages('src'),
-    package_dir = {'': 'src'},
-    install_requires = ['setuptools'],
-)
+version = '0.3.0'
+
+setup(name='shopify',
+      version=version,
+      description='Python bindings to Shopify API',
+      author='Erik Karulf',
+      author_email='erik@karulf.com',
+      url='http://github.com/penny-arcade/shopipy/',
+      packages=['shopify'],
+      package_dir={'shopify':'src'},
+      license='MIT License',
+      requires=['pyactiveresource>1.0.0']
+      platforms=['any'],
+      classifiers=['Development Status :: 3 - Alpha',
+                   'Intended Audience :: Developers', 
+                   'License :: OSI Approved :: MIT License', 
+                   'Operating System :: OS Independent', 
+                   'Programming Language :: Python', 
+                   'Topic :: Software Development', 
+                   'Topic :: Software Development :: Libraries', 
+                   'Topic :: Software Development :: Libraries :: Python Modules']
+      
+    )
