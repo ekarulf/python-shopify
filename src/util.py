@@ -12,3 +12,8 @@ except ImportError:
             return func(*(args + moreargs), **dict(kwargs, **morekwargs))
         return _partial
 
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
+
