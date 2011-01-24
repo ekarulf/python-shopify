@@ -5,18 +5,21 @@ from pyactiveresource.activeresource import ActiveResource
 from pyactiveresource.connection import Connection
 from shopify import util
 
-# FIXME: Session + Authentication!
-# FIXME: Decorators
+def _remote_resources():
+    remote = []
+    resources = __import__('shopify.resources', fromlist=['__all__'])
+    for name in resources.__all__:
+        resource = getattr(resources, name)
+        if issubclass(resource, ShopifyResource):
+            remote.append(resource)
+    return remote
 
 
 class Session(Connection):
     def __new__(cls, *args, **kwargs):
-        resources = __import__('shopify.resources', fromlist=['__all__'])
-        for name in resources.__all__:
-            resource = getattr(resources, name)
-            if issubclass(resource, Base):
-                wrapper = util.partial(cls._construct_resource, resource)
-                setattr(self, name, wrapper)
+        for resource in _remote_resources():
+            wrapper = util.partial(cls._construct_resource, resource)
+            setattr(self, name, wrapper)
         super(Session, cls).__new__(*args, **kwargs)
 
     def __init__(self, domain, api_key, secret, token=None, protocol='https'):
