@@ -7,10 +7,12 @@ from shopify import util
 
 
 class Shop(ShopifyResource):
-    def current(self):
-        return self.find_one(from_=self.prefix)
+    @classmethod
+    def current(cls):
+        return cls.find_one(from_=cls.prefix())
 
-    def shop(self):
+    @classmethod
+    def shop(cls):
         return self.current()
 
     def events(self):
@@ -204,7 +206,7 @@ class Comment(ShopifyResource):
 
 
 class Province(ShopifyResource):
-    prefix_source = "countries/:country_id/"
+    prefix_source = "countries/${country_id}/"
 
 
 class Redirect(ShopifyResource):
