@@ -8,7 +8,7 @@ from shopify import util
 
 class Shop(ShopifyResource):
     def current(self):
-        return self.find_one(from=self.prefix)
+        return self.find_one(from_=self.prefix)
 
     def shop(self):
         return self.current()
@@ -266,63 +266,26 @@ class CustomerGroup(ShopifyResource):
 
 
 class Asset(ShopifyResource):
-    # TODO: Asset is complex!
-    """
-    primary_key = 'key'
     # find an asset by key:
-    #   ShopifyAPI::Asset.find('layout/theme.liquid')
-    def self.find(*args)
-      if args[0].is_a?(Symbol)
-        super
-      else
-        params = {:asset => {:key => args[0]}}
-        params = params.merge(args[1][:params]) if args[1] && args[1][:params]
-        find(:one, :from => "assets.#{format.extension}", :params => params)
-      end
-    end
+    #   Asset.find('layout/theme.liquid')
+    def find(path, **options):
+        params = dict({'asset': {'key': path}}, **options)
+        return self.find_one("assets.xml", **params)
 
     # For text assets, Shopify returns the data in the 'value' attribute.
     # For binary assets, the data is base-64-encoded and returned in the
     # 'attachment' attribute. This accessor returns the data in both cases.
-    def value
-      attributes['value'] ||
-      (attributes['attachment'] ? Base64.decode64(attributes['attachment']) : nil)
-    end
+    def value(self):
+        if "value" in self.attributes:
+            return self.value
+        elif "attachment" in self.attributes:
+            return bas64.b64decode(self.attachment)
+        else:
+            return None
 
-    def attach(data)
-      self.attachment = Base64.encode64(data)
-    end
-
-    def destroy #:nodoc:
-      connection.delete(element_path(:asset => {:key => key}), self.class.headers)
-    end
-
-    def new? #:nodoc:
-      false
-    end
-
-    def self.element_path(id, prefix_options = {}, query_options = nil) #:nodoc:
-      prefix_options, query_options = split_options(prefix_options) if query_options.nil?
-      "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"
-    end
-
-    def method_missing(method_symbol, *arguments) #:nodoc:
-      if %w{value= attachment= src= source_key=}.include?(method_symbol)
-        wipe_value_attributes
-      end
-      super
-    end
-
-    private
-
-    def wipe_value_attributes
-      %w{value attachment src source_key}.each do |attr|
-        attributes.delete(attr)
-      end
-    end
-    end
-    """
-
+    @property
+    def attach(self, data):
+        self.attachment = base64.b64encode(data)
 
 class RecurringApplicationCharge(ShopifyResource):
     # TODO: undef_method :test ?
